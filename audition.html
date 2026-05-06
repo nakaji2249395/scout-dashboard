@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audition｜HIRAETH.Tokyo</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">HIRAETH<span>.</span>Tokyo</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="member.html">Member</a></li>
+    <li><a href="event.html">Event</a></li>
+    <li><a href="audition.html" class="active">Audition</a></li>
+    <li><a href="discography.html">Discography</a></li>
+    <li><a href="history.html">History</a></li>
+    <li><a href="regulation.html">Regulation</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://x.com/hiraeth_tokyo" target="_blank">X</a>
+    <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="member.html" onclick="toggleMenu()">Member</a>
+  <a href="event.html" onclick="toggleMenu()">Event</a>
+  <a href="audition.html" onclick="toggleMenu()">Audition</a>
+  <a href="discography.html" onclick="toggleMenu()">Discography</a>
+  <a href="history.html" onclick="toggleMenu()">History</a>
+  <a href="regulation.html" onclick="toggleMenu()">Regulation</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-title">AUDI<span>TION</span></div>
+</div>
+
+<section>
+  <div class="container" style="max-width:720px;">
+    <div class="reveal">
+      <div class="section-label">Join Us</div>
+      <h2 class="section-title">AUDITION</h2>
+      <div class="section-divider"></div>
+
+      <div style="background:var(--gray2);padding:40px;margin-bottom:2rem;border-left:2px solid var(--accent);">
+        <p style="font-size:16px;line-height:2.2;color:#ccc;">
+          HIRAETH.Tokyoでは随時メンバーを募集しています。<br>
+          全力で限界を突破したい方、個性を爆発させたい方、<br>
+          「普通のアイドルではできないこと」をやりたい方、大歓迎！<br><br>
+          あなたの全力を、ここで爆発させてください。
+        </p>
+      </div>
+
+      <div style="margin-bottom:3rem;">
+        <h3 style="font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;">応募要件</h3>
+        <div style="display:grid;gap:2px;">
+          <div style="background:var(--gray2);padding:16px 20px;font-size:14px;color:#ccc;">活動に熱意を持って取り組める方</div>
+          <div style="background:var(--gray2);padding:16px 20px;font-size:14px;color:#ccc;">グループ活動に理解・協力できる方</div>
+          <div style="background:var(--gray2);padding:16px 20px;font-size:14px;color:#ccc;">定期的にライブ・活動に参加できる方</div>
+          <div style="background:var(--gray2);padding:16px 20px;font-size:14px;color:#ccc;">未経験者歓迎・経験者優遇</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:3rem;">
+        <a href="https://hiraeth.tokyo/audition/" target="_blank" class="btn btn-primary" style="font-size:14px;padding:16px 48px;">
+          詳細・応募フォームはこちら →
+        </a>
+        <p style="font-size:12px;color:var(--text-sub);margin-top:1rem;">※ 詳細情報はWordPressサイトでご確認ください</p>
+      </div>
+
+      <div style="background:var(--gray2);padding:32px;text-align:center;">
+        <p style="font-size:13px;color:var(--text-sub);line-height:2;">
+          ご不明な点は<a href="https://hiraeth.tokyo/inquiry/" target="_blank" style="color:var(--accent);">お問い合わせフォーム</a>からお気軽にご連絡ください。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;">HIRAETH<span style="color:var(--accent);">.</span>Tokyo</div>
+      <p>Office: <a href="https://hajimari.pro" target="_blank" style="color:var(--text-sub);">hajimari.pro</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <a href="index.html">Home</a>
+      <a href="member.html">Member</a>
+      <a href="event.html">Event</a>
+      <a href="audition.html">Audition</a>
+    </div>
+    <div class="footer-col">
+      <h4>Social</h4>
+      <a href="https://x.com/hiraeth_tokyo" target="_blank">X (Twitter)</a>
+      <a href="https://www.youtube.com/channel/UCpL9ipxZxLxXRsdrmZB-d3w" target="_blank">YouTube</a>
+      <a href="https://www.tiktok.com/@hiraethtokyo" target="_blank">TikTok</a>
+      <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HIRAETH.Tokyo All Rights Reserved.</span>
+    <a href="privacy.html" style="color:var(--text-sub);text-decoration:none;">プライバシーポリシー</a>
+  </div>
+</footer>
+<script>
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); observer.unobserve(e.target); } });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(r=>observer.observe(r));
+</script>
+</body>
+</html>

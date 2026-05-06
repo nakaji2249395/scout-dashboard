@@ -3,541 +3,293 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>スカウトDM管理</title>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #ffffff;
-  --bg-sub: #f7f6f3;
-  --bg-ter: #f0efe9;
-  --text: #1a1a1a;
-  --text-sub: #666;
-  --text-hint: #999;
-  --border: rgba(0,0,0,0.1);
-  --border-med: rgba(0,0,0,0.18);
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --blue: #1d9bf0;
-  --blue-bg: #e6f1fb;
-  --blue-text: #185fa5;
-  --green-bg: #eaf3de;
-  --green-text: #3b6d11;
-  --amber-bg: #faeeda;
-  --amber-text: #854f0b;
-  --gray-bg: #f1efe8;
-  --gray-text: #5f5e5a;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1a1a;
-    --bg-sub: #222;
-    --bg-ter: #2a2a2a;
-    --text: #f0efe9;
-    --text-sub: #aaa;
-    --text-hint: #666;
-    --border: rgba(255,255,255,0.1);
-    --border-med: rgba(255,255,255,0.18);
-    --blue-bg: #042c53;
-    --blue-text: #85b7eb;
-    --green-bg: #173404;
-    --green-text: #97c459;
-    --amber-bg: #412402;
-    --amber-text: #ef9f27;
-    --gray-bg: #2c2c2a;
-    --gray-text: #b4b2a9;
-  }
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
-  background: var(--bg-ter);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.app { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
-
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1.5rem;
-}
-.header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
-
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-  margin-bottom: 1.5rem;
-}
-@media (max-width: 480px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-
-.stat-card {
-  background: var(--bg); border-radius: var(--radius-md);
-  border: 0.5px solid var(--border); padding: 12px; text-align: center;
-}
-.stat-num { font-size: 24px; font-weight: 600; }
-.stat-label { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-
-.tabs {
-  display: flex; gap: 4px; background: var(--bg-sub);
-  border-radius: var(--radius-md); padding: 3px; margin-bottom: 1.25rem;
-}
-.tab {
-  flex: 1; text-align: center; padding: 7px 8px; font-size: 13px;
-  border-radius: 6px; cursor: pointer; color: var(--text-sub);
-  border: none; background: transparent; transition: all 0.15s;
-}
-.tab.active {
-  background: var(--bg); color: var(--text); font-weight: 500;
-  border: 0.5px solid var(--border);
-}
-
-.card {
-  background: var(--bg); border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px;
-}
-
-.section { display: none; }
-.section.active { display: block; }
-
-.label { font-size: 12px; color: var(--text-sub); margin-bottom: 4px; }
-
-input[type=text], input[type=url], textarea, select {
-  width: 100%; padding: 9px 12px; font-size: 14px;
-  border: 0.5px solid var(--border-med); border-radius: var(--radius-md);
-  background: var(--bg-sub); color: var(--text);
-  font-family: inherit; outline: none; transition: border 0.15s;
-}
-input:focus, textarea:focus { border-color: var(--blue); }
-textarea { resize: vertical; line-height: 1.6; }
-
-.btn {
-  padding: 8px 16px; font-size: 13px; border-radius: var(--radius-md);
-  cursor: pointer; border: 0.5px solid var(--border-med);
-  background: transparent; color: var(--text); font-family: inherit;
-  transition: background 0.15s;
-}
-.btn:hover { background: var(--bg-sub); }
-.btn:active { opacity: 0.7; }
-.btn-primary { background: var(--text); color: var(--bg); border-color: transparent; font-weight: 500; }
-.btn-primary:hover { opacity: 0.85; background: var(--text); }
-.btn-dm { background: var(--blue); color: #fff; border-color: transparent; font-weight: 500; }
-.btn-dm:hover { opacity: 0.88; background: var(--blue); }
-.btn-sm { padding: 5px 10px; font-size: 12px; }
-.btn-danger { color: #e24b4a; border-color: transparent; }
-.btn-danger:hover { background: #fcebeb; }
-
-.form-row { display: flex; gap: 8px; margin-bottom: 10px; }
-.form-row input { flex: 1; }
-
-.candidate-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 0; border-bottom: 0.5px solid var(--border);
-}
-.candidate-row:last-child { border-bottom: none; }
-.avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: var(--blue-bg); color: var(--blue-text);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 600; flex-shrink: 0;
-}
-.candidate-info { flex: 1; min-width: 0; }
-.candidate-name { font-size: 14px; font-weight: 500; }
-.candidate-meta {
-  font-size: 12px; color: var(--text-sub);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.status-badge {
-  font-size: 11px; padding: 3px 9px; border-radius: 100px;
-  font-weight: 500; flex-shrink: 0; white-space: nowrap;
-}
-.status-pending { background: var(--amber-bg); color: var(--amber-text); }
-.status-sent { background: var(--green-bg); color: var(--green-text); }
-.status-replied { background: var(--blue-bg); color: var(--blue-text); }
-.status-pass { background: var(--gray-bg); color: var(--gray-text); }
-
-.actions { display: flex; gap: 4px; flex-shrink: 0; }
-
-.hashtag-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-.hashtag-chip {
-  font-size: 13px; padding: 5px 13px; background: var(--bg-sub);
-  border: 0.5px solid var(--border); border-radius: 100px;
-  cursor: pointer; color: var(--text); transition: all 0.15s;
-}
-.hashtag-chip:hover { border-color: var(--border-med); background: var(--bg); }
-
-.empty-state {
-  text-align: center; padding: 2.5rem 1rem;
-  color: var(--text-hint); font-size: 14px;
-}
-
-.modal-bg {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.45); z-index: 200;
-  align-items: center; justify-content: center; padding: 1rem;
-}
-.modal-bg.open { display: flex; }
-.modal {
-  background: var(--bg); border-radius: var(--radius-xl);
-  border: 0.5px solid var(--border); padding: 1.5rem;
-  width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-}
-.modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 1.2rem; }
-.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1rem; }
-
-.score-badge {
-  font-size: 12px; padding: 2px 8px; border-radius: 100px;
-  font-weight: 600; background: var(--green-bg); color: var(--green-text);
-}
-.score-low { background: var(--amber-bg); color: var(--amber-text); }
-.score-mid { background: var(--blue-bg); color: var(--blue-text); }
-
-.toast {
-  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-  background: var(--text); color: var(--bg); padding: 10px 20px;
-  border-radius: 100px; font-size: 13px; font-weight: 500;
-  opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 999;
-}
-.toast.show { opacity: 1; }
-
-.schedule-list { display: flex; flex-direction: column; gap: 8px; }
-.schedule-item {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--bg-sub); border-radius: var(--radius-md); padding: 10px 12px;
-}
-.schedule-time { font-size: 13px; font-weight: 600; min-width: 52px; color: var(--blue); }
-.schedule-name { font-size: 13px; flex: 1; }
-.schedule-status { font-size: 11px; color: var(--text-sub); }
-</style>
+<title>HIRAETH.Tokyo｜ヒラエス.トーキョー</title>
+<meta name="description" content="バチバチ気合系全力限界面白個性爆発魂の王道アイドル『HIRAETH.Tokyo』公式サイト" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <h1>🎤 スカウトDM管理</h1>
-    <button class="btn btn-primary" onclick="openAddModal()">＋ 候補者を追加</button>
-  </div>
 
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-label">候補者合計</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-sent">0</div><div class="stat-label">送信済み</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-replied">0</div><div class="stat-label">返信あり</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-pending">0</div><div class="stat-label">未送信</div></div>
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">HIRAETH<span>.</span>Tokyo</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="member.html">Member</a></li>
+    <li><a href="event.html">Event</a></li>
+    <li><a href="audition.html">Audition</a></li>
+    <li><a href="discography.html">Discography</a></li>
+    <li><a href="history.html">History</a></li>
+    <li><a href="regulation.html">Regulation</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://x.com/hiraeth_tokyo" target="_blank">X</a>
+    <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
   </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab(this,'candidates')">一覧</button>
-    <button class="tab" onclick="switchTab(this,'schedule')">今日の予定</button>
-    <button class="tab" onclick="switchTab(this,'search')">ハッシュタグ</button>
-    <button class="tab" onclick="switchTab(this,'template')">テンプレート</button>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
   </div>
+</nav>
 
-  <div id="tab-candidates" class="section active">
-    <div class="card" style="padding: 0 1.25rem;">
-      <div id="candidate-list"></div>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="member.html" onclick="toggleMenu()">Member</a>
+  <a href="event.html" onclick="toggleMenu()">Event</a>
+  <a href="audition.html" onclick="toggleMenu()">Audition</a>
+  <a href="discography.html" onclick="toggleMenu()">Discography</a>
+  <a href="history.html" onclick="toggleMenu()">History</a>
+  <a href="regulation.html" onclick="toggleMenu()">Regulation</a>
+  <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
+  <a href="https://x.com/hiraeth_tokyo" target="_blank">X (Twitter)</a>
+  <a href="https://www.youtube.com/channel/UCpL9ipxZxLxXRsdrmZB-d3w" target="_blank">YouTube</a>
+  <a href="https://www.tiktok.com/@hiraethtokyo" target="_blank">TikTok</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Official Website</div>
+    <img src="images/logo/logo-main.png" alt="HIRAETH.Tokyo" class="hero-logo-img"
+      onerror="this.style.display='none'; document.getElementById('hero-text-title').style.display='block';" />
+    <div id="hero-text-title" class="hero-title" style="display:none;">
+      HIRAETH<span class="accent">.</span>Tokyo
+    </div>
+    <p class="hero-tagline">#日本一のビラ配りアイドル &nbsp;|&nbsp; #最近熱いと噂のアイドル</p>
+    <div class="hero-tags">
+      <span class="hero-tag">全力×個性×王道アイドル</span>
+      <span class="hero-tag">HYPE IDOL</span>
+      <span class="hero-tag">MARQUEE祭 動員1位多数</span>
+      <span class="hero-tag">TV出演多数</span>
+      <span class="hero-tag">幕張メッセ・さいたまスーパーアリーナ出演</span>
+    </div>
+    <div class="hero-cta">
+      <a href="event.html" class="btn btn-primary">Event</a>
+      <a href="member.html" class="btn btn-outline">Member</a>
     </div>
   </div>
+  <div class="scroll-indicator">Scroll</div>
+</section>
 
-  <div id="tab-schedule" class="section">
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <div>
-          <div class="label" style="margin-bottom:2px;">1日の送信上限</div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <input type="number" id="daily-limit" value="20" min="1" max="50" style="width:70px;" />
-            <span style="font-size:13px;color:var(--text-sub);">件/日</span>
-          </div>
+<!-- ABOUT -->
+<section style="background: var(--gray);">
+  <div class="container">
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <div class="section-label">About</div>
+        <h2 class="section-title">WHO WE ARE</h2>
+        <div class="section-divider"></div>
+        <p>バチバチ気合系全力限界面白個性爆発魂の王道アイドル『HIRAETH.Tokyo』です！！</p>
+        <p>HIRAETH.Tokyoといえば個性溢れる限界突破！そしてなんと言っても魂のライブ！</p>
+        <p>山手線を1周徒歩でビラ配りをしたり、大切なライブのためなら滝に打たれたり、渋谷から所沢まで30km夜な夜な雨のなか歩いたり…「そんな事やるんだ！？」と思われるような、普通のアイドルならやらないようなことを企画でもライブでも楽しんでやります。</p>
+        <p>メンバー全員アー写より実物は何倍も可愛い！と言われるビジュを持ちながらも、アイドル界隈から『HIRAETH.Tokyoで気合とヤバさに勝てるグループは無い！』と、いま最も熱いと噂のアイドルです。</p>
+        <div style="margin-top:2rem;">
+          <a href="member.html" class="btn btn-outline">Meet The Members →</a>
         </div>
-        <button class="btn btn-primary" onclick="generateSchedule()">スケジュール生成</button>
       </div>
-      <div id="schedule-list" class="schedule-list">
-        <div class="empty-state">「スケジュール生成」を押すと、未送信の候補者を自動でスケジュールします。</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="label" style="margin-bottom:6px;">LINE Notify 設定</div>
-      <div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">
-        LINE Notify トークンを入力すると、スケジュール通知をLINEで受け取れます。<br>
-        ※ トークンは <a href="https://notify-bot.line.me/ja/" target="_blank" style="color:var(--blue);">notify-bot.line.me</a> で取得できます。
-      </div>
-      <div class="form-row" style="margin-bottom:0;">
-        <input type="text" id="line-token" placeholder="LINE Notify トークンを入力..." />
-        <button class="btn" onclick="saveLineToken()">保存</button>
+      <div class="about-achievements">
+        <div class="achievement-item"><strong>MARQUEE祭</strong>計20回以上出演・動員1位多数</div>
+        <div class="achievement-item"><strong>TV出演</strong>多数</div>
+        <div class="achievement-item"><strong>幕張メッセ</strong>ギガソニ出演</div>
+        <div class="achievement-item"><strong>さいたまスーパーアリーナ</strong>RIDOL GP2023出演</div>
+        <div class="achievement-item"><strong>Zepp・豊洲ピット</strong>出演</div>
+        <div class="achievement-item"><strong>アイドルコロシアム2022</strong>健闘賞受賞</div>
+        <div class="achievement-item"><strong>RIDOL GP2023</strong>2位</div>
+        <div class="achievement-item"><strong>HypeIdol</strong>×ロードモバイル優勝</div>
       </div>
     </div>
   </div>
+</section>
 
-  <div id="tab-search" class="section">
-    <div class="card">
-      <div class="label" style="margin-bottom:8px;">よく使うハッシュタグ</div>
-      <div class="hashtag-wrap" id="hashtag-list"></div>
-      <div class="form-row" style="margin-bottom:0;">
-        <input type="text" id="new-hashtag" placeholder="#アイドル志望 など..." />
-        <button class="btn" onclick="addHashtag()">追加</button>
+<!-- MEMBERS PREVIEW -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Members</div>
+      <h2 class="section-title">THE CREW</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="members-grid reveal">
+      <!-- ももな -->
+      <div class="member-card" onclick="location.href='member.html#momona'">
+        <div class="member-color-bar" style="background:#ff69b4;"></div>
+        <img src="images/members/momona.jpg" alt="ももな"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div style="display:none;width:100%;height:100%;background:var(--gray2);align-items:center;justify-content:center;font-size:80px;">🐻</div>
+        <div class="member-bottom">
+          <div class="member-name-jp" style="color:#ff69b4;">ももな</div>
+          <div class="member-name-en">Momona</div>
+          <div class="member-color-label" style="color:#ff69b4;">🐻 Pink</div>
+        </div>
+        <div class="member-overlay">
+          <div class="member-bio">甘やかされて生きてるアイドル。大好きなお菓子は太るので魔法の言葉の可愛いを下さい🥺</div>
+        </div>
+      </div>
+      <!-- ひなた -->
+      <div class="member-card" onclick="location.href='member.html#hinata'">
+        <div class="member-color-bar" style="background:#fff;"></div>
+        <img src="images/members/hinata.jpg" alt="ひなた"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div style="display:none;width:100%;height:100%;background:#1a1a1a;align-items:center;justify-content:center;font-size:80px;">🐰</div>
+        <div class="member-bottom">
+          <div class="member-name-jp" style="color:#f0f0f0;">ひなた</div>
+          <div class="member-name-en">Hinata</div>
+          <div class="member-color-label" style="color:#ccc;">🐰 White</div>
+        </div>
+        <div class="member-overlay">
+          <div class="member-bio">なんとひなたの事が好きと申すか…て、照れますな。全力うちゅう人。</div>
+        </div>
+      </div>
+      <!-- にあ -->
+      <div class="member-card" onclick="location.href='member.html#nia'">
+        <div class="member-color-bar" style="background:#4caf50;"></div>
+        <img src="images/members/nia.jpg" alt="にあ"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div style="display:none;width:100%;height:100%;background:#0a1a0a;align-items:center;justify-content:center;font-size:80px;">🐸</div>
+        <div class="member-bottom">
+          <div class="member-name-jp" style="color:#4caf50;">にあ</div>
+          <div class="member-name-en">Nia</div>
+          <div class="member-color-label" style="color:#4caf50;">🐸 Green</div>
+        </div>
+        <div class="member-overlay">
+          <div class="member-bio">無限大の可能性をもち関西弁を操る演技派アイドル。にあを推すと世界をもっと明るく見せてあげる💚</div>
+        </div>
+      </div>
+      <!-- みーな -->
+      <div class="member-card" onclick="location.href='member.html#amina'">
+        <div class="member-color-bar" style="background:#9c27b0;"></div>
+        <img src="images/members/amina.jpg" alt="汐音亜美奈"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div style="display:none;width:100%;height:100%;background:#0a0010;align-items:center;justify-content:center;font-size:80px;">🍜</div>
+        <div class="member-bottom">
+          <div class="member-name-jp" style="color:#ce93d8;">汐音亜美奈</div>
+          <div class="member-name-en">Amina</div>
+          <div class="member-color-label" style="color:#ce93d8;">🍜 Purple</div>
+        </div>
+        <div class="member-overlay">
+          <div class="member-bio">みーな。山梨県出身。魚座。</div>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="label" style="margin-bottom:6px;">Twitter/X で検索</div>
-      <div class="form-row" style="margin-bottom:0;">
-        <input type="text" id="search-query" placeholder="#アイドル志望 など..." />
-        <button class="btn btn-dm" onclick="searchTwitter()">検索を開く</button>
+    <div style="text-align:center;margin-top:3rem;" class="reveal">
+      <a href="member.html" class="btn btn-outline">View All Members →</a>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section style="background: var(--gray);">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Schedule</div>
+      <h2 class="section-title">EVENTS</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="timetree-wrap reveal">
+      <iframe src="https://timetreeapp.com/public_calendars/hiraeth_tokyo/embed"
+        title="HIRAETH.Tokyo イベントカレンダー" allowfullscreen></iframe>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;" class="reveal">
+      <a href="event.html" class="btn btn-outline">Full Schedule →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL LINKS -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Follow Us</div>
+      <h2 class="section-title">LINKS</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="links-grid reveal">
+      <a href="https://x.com/hiraeth_tokyo" target="_blank" class="link-card">
+        <span class="link-card-icon">𝕏</span>X (Twitter)
+      </a>
+      <a href="https://www.youtube.com/channel/UCpL9ipxZxLxXRsdrmZB-d3w" target="_blank" class="link-card">
+        <span class="link-card-icon">▶</span>YouTube
+      </a>
+      <a href="https://www.tiktok.com/@hiraethtokyo" target="_blank" class="link-card">
+        <span class="link-card-icon">♪</span>TikTok
+      </a>
+      <a href="https://www.showroom-live.com/r/hiraethtokyo" target="_blank" class="link-card">
+        <span class="link-card-icon">◉</span>Showroom
+      </a>
+      <a href="https://mixch.tv/u/17339228" target="_blank" class="link-card">
+        <span class="link-card-icon">◈</span>ミクチャ
+      </a>
+      <a href="https://hiraethtokyo.base.shop/" target="_blank" class="link-card">
+        <span class="link-card-icon">◻</span>Shop
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- AUDITION CTA -->
+<section style="background: var(--gray); padding: 80px 2rem;">
+  <div class="container">
+    <div class="audition-box reveal">
+      <div class="section-label">Join Us</div>
+      <h2>AUDITION</h2>
+      <p>HIRAETH.Tokyoでは随時メンバーを募集しています。<br>あなたの全力を、ここで爆発させてください。</p>
+      <a href="audition.html" class="btn btn-primary">オーディションを見る →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;">
+        HIRAETH<span style="color:var(--accent);">.</span>Tokyo
       </div>
+      <p>バチバチ気合系全力限界面白<br>個性爆発魂の王道アイドル<br><br>Office: <a href="https://hajimari.pro" target="_blank" style="color:var(--text-sub);">hajimari.pro</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <a href="index.html">Home</a>
+      <a href="member.html">Member</a>
+      <a href="event.html">Event</a>
+      <a href="audition.html">Audition</a>
+      <a href="discography.html">Discography</a>
+      <a href="history.html">History</a>
+      <a href="regulation.html">Regulation</a>
+    </div>
+    <div class="footer-col">
+      <h4>Social</h4>
+      <a href="https://x.com/hiraeth_tokyo" target="_blank">X (Twitter)</a>
+      <a href="https://www.youtube.com/channel/UCpL9ipxZxLxXRsdrmZB-d3w" target="_blank">YouTube</a>
+      <a href="https://www.tiktok.com/@hiraethtokyo" target="_blank">TikTok</a>
+      <a href="https://www.showroom-live.com/r/hiraethtokyo" target="_blank">Showroom</a>
+      <a href="https://mixch.tv/u/17339228" target="_blank">ミクチャ</a>
+      <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
     </div>
   </div>
-
-  <div id="tab-template" class="section">
-    <div class="card">
-      <div class="label" style="margin-bottom:4px;">DMテンプレート</div>
-      <div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">
-        <code style="background:var(--bg-sub);padding:1px 5px;border-radius:4px;">{name}</code> は相手のユーザー名に自動置換されます。
-      </div>
-      <textarea id="template-text" rows="10"></textarea>
-      <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-        <button class="btn btn-primary" onclick="saveTemplate()">保存</button>
-      </div>
-    </div>
+  <div class="footer-bottom">
+    <span>© 2026 HIRAETH.Tokyo All Rights Reserved.</span>
+    <a href="privacy.html" style="color:var(--text-sub);text-decoration:none;">プライバシーポリシー</a>
   </div>
-</div>
-
-<!-- 候補者追加モーダル -->
-<div class="modal-bg" id="add-modal">
-  <div class="modal">
-    <h2>候補者を追加</h2>
-    <div class="label">Twitter URL または @ユーザー名</div>
-    <div style="margin-bottom:10px;">
-      <input type="text" id="in-url" placeholder="https://twitter.com/username または @username" />
-    </div>
-    <div class="label">表示名</div>
-    <div style="margin-bottom:10px;">
-      <input type="text" id="in-name" placeholder="例：田中さくら" />
-    </div>
-    <div class="label">メモ（投稿の特徴など）</div>
-    <div style="margin-bottom:4px;">
-      <textarea id="in-memo" rows="3" placeholder="例：ダンス系の投稿が多い、フォロワー2000人..."></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('add-modal')">キャンセル</button>
-      <button class="btn btn-primary" onclick="addCandidate()">追加</button>
-    </div>
-  </div>
-</div>
-
-<!-- DM送信モーダル -->
-<div class="modal-bg" id="dm-modal">
-  <div class="modal">
-    <h2 id="dm-title">DM文章を確認</h2>
-    <div class="label" style="margin-bottom:6px;">送信するDM</div>
-    <textarea id="dm-text" rows="11" style="margin-bottom:4px;"></textarea>
-    <div style="font-size:12px;color:var(--text-sub);margin-bottom:4px;">
-      ※ 「コピーしてTwitterを開く」を押すとクリップボードにコピーされ、Twitter DM画面が開きます。貼り付けて送信してください。
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('dm-modal')">キャンセル</button>
-      <button class="btn btn-dm" onclick="copyAndOpen()">コピーしてTwitterを開く →</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+</footer>
 
 <script>
-let candidates = JSON.parse(localStorage.getItem('scout_v2_candidates') || '[]');
-let hashtags = JSON.parse(localStorage.getItem('scout_v2_hashtags') || '["#アイドル志望","#歌手志望","#モデル志望","#ダンス好きな人と繋がりたい","#芸能界目指してる"]');
-let template = localStorage.getItem('scout_v2_template') || 'こんにちは、{name}さん。突然のメッセージ失礼します。\n\n私は〇〇芸能事務所のスカウト担当と申します。{name}さんの投稿を拝見し、ぜひ一度お話をさせていただきたいと思いご連絡しました。\n\nもしよろしければ、詳しいご案内をさせていただきたいと思います。ご検討いただけますでしょうか。\n\nどうぞよろしくお願いいたします。';
-let lineToken = localStorage.getItem('scout_v2_line_token') || '';
-let currentDmIdx = null;
-let todaySchedule = [];
-
-function save() {
-  localStorage.setItem('scout_v2_candidates', JSON.stringify(candidates));
-  localStorage.setItem('scout_v2_hashtags', JSON.stringify(hashtags));
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
 }
 
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function switchTab(el, name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
-}
-
-function updateStats() {
-  document.getElementById('s-total').textContent = candidates.length;
-  document.getElementById('s-sent').textContent = candidates.filter(c => c.status === 'sent' || c.status === 'replied').length;
-  document.getElementById('s-replied').textContent = candidates.filter(c => c.status === 'replied').length;
-  document.getElementById('s-pending').textContent = candidates.filter(c => c.status === 'pending').length;
-}
-
-function renderCandidates() {
-  const list = document.getElementById('candidate-list');
-  if (!candidates.length) {
-    list.innerHTML = '<div class="empty-state">候補者がまだいません。<br>「＋ 候補者を追加」から登録してください。</div>';
-    updateStats(); return;
-  }
-  const statusMap = {
-    pending: ['status-pending','未送信'],
-    sent:    ['status-sent','送信済み'],
-    replied: ['status-replied','返信あり'],
-    pass:    ['status-pass','見送り']
-  };
-  list.innerHTML = candidates.map((c, i) => {
-    const init = (c.name||'U')[0].toUpperCase();
-    const [cls, lbl] = statusMap[c.status] || statusMap.pending;
-    return `<div class="candidate-row">
-      <div class="avatar">${init}</div>
-      <div class="candidate-info">
-        <div class="candidate-name">${esc(c.name||'ユーザー')}</div>
-        <div class="candidate-meta">${esc(c.url||'')}${c.memo?' · '+esc(c.memo):''}</div>
-      </div>
-      <span class="status-badge ${cls}">${lbl}</span>
-      <div class="actions">
-        <button class="btn btn-sm btn-dm" onclick="openDm(${i})">DM</button>
-        <button class="btn btn-sm" onclick="cycleStatus(${i})" title="ステータスを変更">⟳</button>
-        <button class="btn btn-sm btn-danger" onclick="removeCandidate(${i})">✕</button>
-      </div>
-    </div>`;
-  }).join('');
-  updateStats();
-}
-
-function renderHashtags() {
-  document.getElementById('hashtag-list').innerHTML = hashtags.map(h =>
-    `<span class="hashtag-chip" onclick="setSearch('${esc(h)}')">${esc(h)}</span>`
-  ).join('');
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function openAddModal() {
-  ['in-url','in-name','in-memo'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('add-modal').classList.add('open');
-  setTimeout(() => document.getElementById('in-url').focus(), 100);
-}
-
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function addCandidate() {
-  const url = document.getElementById('in-url').value.trim();
-  const name = document.getElementById('in-name').value.trim();
-  const memo = document.getElementById('in-memo').value.trim();
-  if (!url && !name) { toast('URLまたは名前を入力してください'); return; }
-  let username = '';
-  const m = url.match(/(?:twitter|x)\.com\/([^\/\?#]+)/) || url.match(/^@?(\w+)$/);
-  if (m) username = m[1];
-  candidates.unshift({ url, name: name || ('@'+username) || 'ユーザー', username, memo, status: 'pending', addedAt: Date.now() });
-  save(); closeModal('add-modal'); renderCandidates(); toast('候補者を追加しました');
-}
-
-function removeCandidate(i) {
-  if (!confirm(`「${candidates[i].name}」を削除しますか？`)) return;
-  candidates.splice(i, 1); save(); renderCandidates();
-}
-
-function cycleStatus(i) {
-  const s = ['pending','sent','replied','pass'];
-  candidates[i].status = s[(s.indexOf(candidates[i].status)+1) % s.length];
-  save(); renderCandidates();
-}
-
-function openDm(i) {
-  currentDmIdx = i;
-  const c = candidates[i];
-  document.getElementById('dm-title').textContent = (c.name||'ユーザー') + ' へのDM';
-  const displayName = (c.name||'').replace(/^@/,'') || 'さん';
-  document.getElementById('dm-text').value = template.replace(/\{name\}/g, displayName);
-  document.getElementById('dm-modal').classList.add('open');
-}
-
-function copyAndOpen() {
-  const text = document.getElementById('dm-text').value;
-  navigator.clipboard.writeText(text).then(() => toast('クリップボードにコピーしました')).catch(() => {});
-  if (currentDmIdx !== null) {
-    const c = candidates[currentDmIdx];
-    const u = c.username || (c.url.match(/(?:twitter|x)\.com\/([^\/\?#]+)/)||[])[1] || '';
-    const dmUrl = 'https://twitter.com/messages/compose' + (u ? '?recipient_id='+u : '') + '&text=' + encodeURIComponent(text);
-    window.open(dmUrl, '_blank');
-    candidates[currentDmIdx].status = 'sent';
-    save(); renderCandidates();
-  }
-  closeModal('dm-modal');
-}
-
-function addHashtag() {
-  const v = document.getElementById('new-hashtag').value.trim();
-  if (!v) return;
-  const tag = v.startsWith('#') ? v : '#'+v;
-  if (!hashtags.includes(tag)) { hashtags.push(tag); localStorage.setItem('scout_v2_hashtags', JSON.stringify(hashtags)); }
-  document.getElementById('new-hashtag').value = '';
-  renderHashtags();
-}
-
-function setSearch(tag) { document.getElementById('search-query').value = tag; }
-
-function searchTwitter() {
-  const q = document.getElementById('search-query').value.trim();
-  if (!q) return;
-  window.open('https://twitter.com/search?q='+encodeURIComponent(q)+'&f=user', '_blank');
-}
-
-function saveTemplate() {
-  template = document.getElementById('template-text').value;
-  localStorage.setItem('scout_v2_template', template);
-  toast('テンプレートを保存しました');
-}
-
-function saveLineToken() {
-  lineToken = document.getElementById('line-token').value.trim();
-  localStorage.setItem('scout_v2_line_token', lineToken);
-  toast('LINEトークンを保存しました');
-}
-
-function generateSchedule() {
-  const limit = parseInt(document.getElementById('daily-limit').value) || 20;
-  const pending = candidates.filter(c => c.status === 'pending').slice(0, limit);
-  if (!pending.length) { toast('未送信の候補者がいません'); return; }
-
-  const now = new Date();
-  const start = 10 * 60;
-  const end = 21 * 60;
-  const range = end - start;
-
-  todaySchedule = pending.map((c, i) => {
-    const offset = Math.floor((range / pending.length) * i + Math.random() * 15);
-    const mins = start + offset;
-    const h = String(Math.floor(mins / 60)).padStart(2, '0');
-    const m = String(mins % 60).padStart(2, '0');
-    return { time: h+':'+m, name: c.name, url: c.url, username: c.username, idx: candidates.indexOf(c) };
-  }).sort((a, b) => a.time.localeCompare(b.time));
-
-  const list = document.getElementById('schedule-list');
-  list.innerHTML = todaySchedule.map((s, i) =>
-    `<div class="schedule-item">
-      <span class="schedule-time">${s.time}</span>
-      <span class="schedule-name">${esc(s.name)}</span>
-      <button class="btn btn-sm btn-dm" onclick="openDm(${s.idx})">DM</button>
-    </div>`
-  ).join('');
-
-  toast(`${todaySchedule.length}件のスケジュールを生成しました`);
-}
-
-document.addEventListener('click', e => {
-  if (e.target.classList.contains('modal-bg')) e.target.classList.remove('open');
-});
-
-document.getElementById('template-text').value = template;
-document.getElementById('line-token').value = lineToken;
-renderHashtags();
-renderCandidates();
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
 </script>
 </body>
 </html>

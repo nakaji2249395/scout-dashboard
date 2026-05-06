@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Event｜HIRAETH.Tokyo</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">HIRAETH<span>.</span>Tokyo</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="member.html">Member</a></li>
+    <li><a href="event.html" class="active">Event</a></li>
+    <li><a href="audition.html">Audition</a></li>
+    <li><a href="discography.html">Discography</a></li>
+    <li><a href="history.html">History</a></li>
+    <li><a href="regulation.html">Regulation</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://x.com/hiraeth_tokyo" target="_blank">X</a>
+    <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMenu()">Home</a>
+  <a href="member.html" onclick="toggleMenu()">Member</a>
+  <a href="event.html" onclick="toggleMenu()">Event</a>
+  <a href="audition.html" onclick="toggleMenu()">Audition</a>
+  <a href="discography.html" onclick="toggleMenu()">Discography</a>
+  <a href="history.html" onclick="toggleMenu()">History</a>
+  <a href="regulation.html" onclick="toggleMenu()">Regulation</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-title">EV<span>ENT</span></div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="reveal" style="margin-bottom:2rem;">
+      <div class="section-label">Schedule</div>
+      <h2 class="section-title">EVENTS</h2>
+      <div class="section-divider"></div>
+      <p style="color:var(--text-sub);font-size:13px;margin-bottom:2rem;">
+        ※ カレンダーには未確定情報も含まれます。随時更新されますのでご確認ください。
+      </p>
+    </div>
+    <div class="timetree-wrap reveal" style="height:800px;">
+      <iframe src="https://timetreeapp.com/public_calendars/hiraeth_tokyo/embed"
+        title="HIRAETH.Tokyo イベントカレンダー" allowfullscreen></iframe>
+    </div>
+
+    <div class="reveal" style="margin-top:3rem;padding:2rem;background:var(--gray2);border-left:2px solid var(--accent);">
+      <h3 style="font-size:14px;letter-spacing:2px;margin-bottom:1rem;color:var(--accent);">★ 星の数について</h3>
+      <p style="font-size:13px;color:var(--text-sub);line-height:2;">
+        各イベントに⭐︎が数個ついております。おすすめの度合や今後の活動につながる重要度など様々な要素により星を1個〜10個つけております。無銭イベントに星は基本ついておりません。
+      </p>
+      <h3 style="font-size:14px;letter-spacing:2px;margin:1.5rem 0 1rem;color:var(--accent);">指名入場</h3>
+      <p style="font-size:13px;color:var(--text-sub);line-height:2;">
+        ポイントカードをお持ちのお客様がHIRAETH.Tokyo指名で入場した際に、星の数と同じ数のポイントをつけております。
+      </p>
+    </div>
+
+    <div class="reveal" style="margin-top:2rem;display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="https://www.google.com/calendar/render?cid=webcal%3A%2F%2Fhiraeth.tokyo%2F%3Fpost_type%3Dtribe_events%26ical%3D1%26eventDisplay%3Dlist" target="_blank" class="btn btn-outline">Googleカレンダーに追加</a>
+      <a href="https://timetreeapp.com/public_calendars/hiraeth_tokyo" target="_blank" class="btn btn-outline">TimeTreeで見る</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;">HIRAETH<span style="color:var(--accent);">.</span>Tokyo</div>
+      <p>Office: <a href="https://hajimari.pro" target="_blank" style="color:var(--text-sub);">hajimari.pro</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <a href="index.html">Home</a>
+      <a href="member.html">Member</a>
+      <a href="event.html">Event</a>
+      <a href="audition.html">Audition</a>
+      <a href="discography.html">Discography</a>
+    </div>
+    <div class="footer-col">
+      <h4>Social</h4>
+      <a href="https://x.com/hiraeth_tokyo" target="_blank">X (Twitter)</a>
+      <a href="https://www.youtube.com/channel/UCpL9ipxZxLxXRsdrmZB-d3w" target="_blank">YouTube</a>
+      <a href="https://www.tiktok.com/@hiraethtokyo" target="_blank">TikTok</a>
+      <a href="https://hiraethtokyo.base.shop/" target="_blank">Shop</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HIRAETH.Tokyo All Rights Reserved.</span>
+    <a href="privacy.html" style="color:var(--text-sub);text-decoration:none;">プライバシーポリシー</a>
+  </div>
+</footer>
+<script>
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); observer.unobserve(e.target); } });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(r=>observer.observe(r));
+</script>
+</body>
+</html>
